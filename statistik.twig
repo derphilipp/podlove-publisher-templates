@@ -5,9 +5,9 @@
 {% set episodes_diverse = 0 %}
 
 {% for episode in podcast.episodes %}
-   {% set sum = sum + episode.duration.totalMilliseconds %} 
+   {% set sum = sum + episode.duration.totalMilliseconds %}
    {% set count = count + 1 %}
-   
+
       {% for contributor in episode.contributors %}
       {% if contributor.gender == "male" %}
                {% set episodes_male = episodes_male + 1 %}
@@ -29,17 +29,17 @@
 <p>Unsere aktuelle Folge (<a href="{{ latest.url }}"><b>{{ latest.title }}</b></a>) hat bisher <b>{{ latest.total_downloads }} Downloads</b>. {% if not latest.meta('_podlove_downloads_2d') is empty %} In den ersten 48 Stunden waren es <b>{{  latest.meta('_podlove_downloads_2d') }} Abrufe</b>.{% endif %}</p>
 
 <!-- <script src="https://unpkg.com/chartkick@4.0.4/dist/chartkick.js"></script> -->
-<script src="/wp-content/uploads/js/chartkick.js"></script>
 <!-- <script src="https://unpkg.com/chart.js@3.3.2/dist/chart.js"></script> -->
-<script src="/wp-content/uploads/js/chart.js"></script>
 <!-- <script src="https://unpkg.com/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.js"></script> -->
+<script src="/wp-content/uploads/js/chartkick.js"></script>
+<script src="/wp-content/uploads/js/chart.js"></script>
 <script src="/wp-content/uploads/js/chartjs-adapter-date-fns.bundle.js"></script>
 
 <div id="all-episodes" style="height: 300px;"></div>
 <script>
     new Chartkick.ColumnChart("all-episodes", [
         {% for episode in podcast.episodes({publicationDate: 'title', 'order': 'ASC'})|filter(e => e.total_downloads > 0) %}
-            ["{{ episode.title|split(' - ')|first }}", {{ episode.total_downloads }}],
+            ["{{ episode.title|split('&#8211;')|first|escape('js') }}", {{ episode.total_downloads|escape('js') }}],
         {% endfor %}
     ]);
 </script>
@@ -53,7 +53,7 @@
 <ul>
     {% for episode in podcast.episodes|filter(e => e.total_downloads > 0)|sort((b, a) => a.total_downloads <=> b.total_downloads)|slice(0,5) %}
         <li>
-            <a href="{{ episode.url }}"><b>{{ episode.title|split(' - ')|first }}</b></a> ({{ episode.total_downloads }} Downloads)
+            <a href="{{ episode.url }}"><b>{{ episode.title|split('&#8211;')|first}}</b></a> ({{ episode.total_downloads }} Downloads)
         </li>
     {% endfor %}
 </ul>
@@ -62,7 +62,7 @@
 <ul>
     {% for episode in podcast.episodes|filter(e => e.total_downloads > 0)|sort((a, b) => a.total_downloads <=> b.total_downloads)|slice(0,5) %}
         <li>
-            <a href="{{ episode.url }}"><b>{{ episode.title|split(' - ')|first }}</b></a> ({{ episode.total_downloads }} Downloads)
+            <a href="{{ episode.url }}"><b>{{ episode.title|split('&#8211;')|first}}</b></a> ({{ episode.total_downloads }} Downloads)
         </li>
     {% endfor %}
 </ul>
@@ -73,7 +73,7 @@
 <script>
     new Chartkick.ColumnChart("episode-length", [
         {% for episode in podcast.episodes({publicationDate: 'title', 'order': 'ASC'})|filter(e => e.total_downloads > 0) %}
-            ["{{ episode.title|split(' - ')|first }}", {{ (episode.duration.totalMilliseconds / 1000 / 60)|round(0, 'floor')  }}],
+            ["{{ episode.title|split(' - ')|first}}", {{ (episode.duration.totalMilliseconds / 1000 / 60)|round(0, 'floor')  }}],
         {% endfor %}
     ]);
 </script>
@@ -82,7 +82,7 @@
 <ul>
     {% for episode in podcast.episodes|filter(e => e.duration.totalMilliseconds > 0)|sort((b, a) => a.duration.totalMilliseconds <=> b.duration.totalMilliseconds)|slice(0,5) %}
         <li>
-            <a href="{{ episode.url }}"><b>{{ episode.title|split(' - ')|first }}</b></a> ({{ episode.duration }})
+            <a href="{{ episode.url }}"><b>{{ episode.title|split('&#8211;')|first }}</b></a> ({{ episode.duration }})
         </li>
     {% endfor %}
 </ul>
@@ -91,7 +91,7 @@
 <ul>
     {% for episode in podcast.episodes|filter(e => e.duration.totalMilliseconds > 0)|sort((a, b) => a.duration.totalMilliseconds <=> b.duration.totalMilliseconds)|slice(0,5) %}
         <li>
-            <a href="{{ episode.url }}"><b>{{ episode.title|split(' - ')|first }}</b></a> ({{ episode.duration }})
+            <a href="{{ episode.url }}"><b>{{ episode.title|split('&#8211;')|first}}</b></a> ({{ episode.duration }})
         </li>
     {% endfor %}
 </ul>
@@ -101,8 +101,8 @@
 <ul>
     {% for episode in podcast.episodes|sort((b, a) => a.post.comment_count <=> b.post.comment_count)|slice(0,5) %}
         <li>
-            <a href="{{ episode.url }}#comments"><b>{{ episode.title|split(' - ')|first }}</b></a> ({{ episode.post.comment_count }} Kommentare)
-            
+            <a href="{{ episode.url }}#comments"><b>{{ episode.title|split('&#8211;')|first|escape('js') }}</b></a> ({{ episode.post.comment_count }} Kommentare)
+
         </li>
     {% endfor %}
 </ul>
